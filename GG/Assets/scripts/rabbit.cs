@@ -16,10 +16,13 @@ public class rabbit : MonoBehaviour {
 
     IEnumerator moveInRandomDir()
     {
-        yield return new WaitForSeconds(Random.Range(5, 10f));
+        yield return new WaitForSeconds(Random.Range(5, 25f));
+
+        float x = transform.position.x + Random.Range(-0.7f, 0.7f);
+        float y = transform.position.y + Random.Range(-0.7f, 0.7f);
 
         anim.Play("rabbitMoving");
-        StartCoroutine(MoveToPosition(this.transform, new Vector3(transform.position.x+1f, transform.position.y+1f, transform.position.z), 5f));
+        StartCoroutine(MoveToPosition(this.transform, new Vector3(x, y, transform.position.z), 5f));
         StartCoroutine(moveInRandomDir());
     }
 
@@ -41,6 +44,8 @@ public class rabbit : MonoBehaviour {
             transform.position = Vector3.Lerp(currentPos, position, t);
             yield return null;
         }
+
+        anim.Play("rabbitAnim");
     }
 
 }
