@@ -10,8 +10,18 @@ public class rabbit : MonoBehaviour {
     void Start()
     {
         anim = GetComponent<Animator>();
+
+        StartCoroutine(moveInRandomDir());
     }
 
+    IEnumerator moveInRandomDir()
+    {
+        yield return new WaitForSeconds(Random.Range(5, 10f));
+
+        anim.Play("rabbitMoving");
+        StartCoroutine(MoveToPosition(this.transform, new Vector3(transform.position.x+1f, transform.position.y+1f, transform.position.z), 5f));
+        StartCoroutine(moveInRandomDir());
+    }
 
     void OnMouseDown()
     {
@@ -21,4 +31,16 @@ public class rabbit : MonoBehaviour {
         else Destroy(this.gameObject);
         anim.Play("treeAnim");
     }
+    public IEnumerator MoveToPosition(Transform transform, Vector3 position, float timeToMove)
+    {
+        var currentPos = transform.position;
+        var t = 0f;
+        while (t < 1)
+        {
+            t += Time.deltaTime / timeToMove;
+            transform.position = Vector3.Lerp(currentPos, position, t);
+            yield return null;
+        }
+    }
+
 }
