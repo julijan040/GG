@@ -11,10 +11,15 @@ public class gameManager : MonoBehaviour {
     public int food;
     public Text foodText;
 
+
+    public Texture2D cursorTexture;
+    CursorMode cursorMode = CursorMode.ForceSoftware;
+    Vector2 hotSpot = Vector2.zero;
+
     void Start ()
     {
-	
-	}
+        Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+    }
 	
 	void Update ()
     {
