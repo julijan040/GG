@@ -11,7 +11,7 @@ public class tree : MonoBehaviour {
     {
         anim = GetComponent<Animator>();
     }
-    
+
 
     void OnMouseDown()
     {

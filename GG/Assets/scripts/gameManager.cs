@@ -13,6 +13,8 @@ public class gameManager : MonoBehaviour {
 
 
     public Texture2D cursorTexture;
+    public Texture2D cursorTextureDown;
+
     CursorMode cursorMode = CursorMode.ForceSoftware;
     Vector2 hotSpot = Vector2.zero;
 
@@ -23,8 +25,16 @@ public class gameManager : MonoBehaviour {
 	
 	void Update ()
     {
-	
-	}
+        if (Input.GetMouseButtonDown(0))
+        {
+            Cursor.SetCursor(cursorTextureDown, hotSpot, cursorMode);
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+        }
+
+    }
 
     public void updateUI()
     {
