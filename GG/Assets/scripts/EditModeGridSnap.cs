@@ -7,6 +7,13 @@ public class EditModeGridSnap : MonoBehaviour
     public float snapValue = 1;
     public float depth = 0;
 
+    public bool isTwoBoxSprite;
+
+    void Start()
+    {
+        this.enabled = false;
+    }
+
     void Update()
     {
         float snapInverse = 1 / snapValue;
@@ -17,6 +24,7 @@ public class EditModeGridSnap : MonoBehaviour
         // so 1.45 to nearest .5 is 1.5
         x = Mathf.Round(transform.position.x * snapInverse) / snapInverse;
         y = Mathf.Round(transform.position.y * snapInverse) / snapInverse;
+        if (isTwoBoxSprite) y += 0.16f;
         z = depth;  // depth from camera
 
         transform.position = new Vector3(x, y, z);
