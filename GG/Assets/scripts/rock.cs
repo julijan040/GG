@@ -9,6 +9,8 @@ public class rock : MonoBehaviour {
 
     public GameObject rockDirt;
 
+    public bool killed;
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -17,12 +19,17 @@ public class rock : MonoBehaviour {
 
     void OnMouseDown()
     {
-        doEffect();
-        gameManager.rock++;
-        gameManager.updateUI();
-        if (hp != 0) hp--;
-        else Destroy(this.gameObject);
-        anim.Play("treeAnim");
+        if(!killed)
+        {
+            doEffect();
+            gameManager.rock++;
+            gameManager.updateUI();
+            anim.Play("treeAnim");
+            if (hp != 0) hp--;
+            else Dead();
+
+        }
+
     }
 
     void doEffect()
@@ -37,6 +44,15 @@ public class rock : MonoBehaviour {
 
         StartCoroutine(DisableRigidbody(instance));
         StartCoroutine(DestroyInstance(instance));
+    }
+
+    void Dead()
+    {
+        killed = true;
+
+        anim.Play("killAnim");
+
+        StartCoroutine(kill());
     }
 
     IEnumerator DestroyInstance(GameObject instance)
@@ -54,6 +70,12 @@ public class rock : MonoBehaviour {
     {
         yield return new WaitForSeconds(0.65f);
         instance.GetComponent<Rigidbody2D>().isKinematic = true;
+    }
+
+    IEnumerator kill()
+    {
+        yield return new WaitForSeconds(4f);
+        Destroy(this.gameObject);
     }
 
 }
