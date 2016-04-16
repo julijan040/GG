@@ -37,8 +37,6 @@ public class tree : MonoBehaviour {
         if(!killed)
         {
             doEffect();
-            gameManager.wood++;
-            gameManager.updateUI();
             anim.Play("treeAnim");
             if (hp != 0) hp--;
             else Dead();

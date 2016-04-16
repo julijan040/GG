@@ -11,6 +11,8 @@ public class rock : MonoBehaviour {
 
     public bool killed;
 
+    public GameObject Item;
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -22,8 +24,6 @@ public class rock : MonoBehaviour {
         if(!killed)
         {
             doEffect();
-            gameManager.rock++;
-            gameManager.updateUI();
             anim.Play("treeAnim");
             if (hp != 0) hp--;
             else Dead();
@@ -74,8 +74,34 @@ public class rock : MonoBehaviour {
 
     IEnumerator kill()
     {
+        GetComponent<BoxCollider2D>().enabled = false;
+
+        DropItems();
+
+
         yield return new WaitForSeconds(4f);
+
+
+
         Destroy(this.gameObject);
+    }
+
+    void DropItems()
+    {
+        GameObject instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
+
+        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
+
+        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
+
+
+
     }
 
 }

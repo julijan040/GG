@@ -12,6 +12,8 @@ public class deer : MonoBehaviour {
 
     public bool killed;
 
+    public GameObject Item;
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -47,8 +49,6 @@ public class deer : MonoBehaviour {
         if (!killed)
         {
             doEffect();
-            gameManager.food++;
-            gameManager.updateUI();
             anim.Play("treeAnim");
             if (hp != 0) hp--;
             else Dead();
@@ -73,10 +73,31 @@ public class deer : MonoBehaviour {
 
     IEnumerator kill()
     {
-       
-        yield return new WaitForSeconds(4f);
-        Destroy(this.gameObject);
+        GetComponent<BoxCollider2D>().enabled = false;
 
+        DropItems();
+
+
+        yield return new WaitForSeconds(4f);
+
+
+
+        Destroy(this.gameObject);
+    }
+
+    void DropItems()
+    {
+        GameObject instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
+
+        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
+
+        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
     }
 
     IEnumerator changeAnimation()

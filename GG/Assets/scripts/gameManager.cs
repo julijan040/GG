@@ -136,8 +136,8 @@ public class gameManager : MonoBehaviour {
 
     public void updateUI()
     {
-        woodText.text = wood.ToString() + " wood";
-        rockText.text = rock.ToString() + " rock";
-        foodText.text = food.ToString() + " food";
+        woodText.text = wood.ToString();
+        rockText.text = rock.ToString();
+        foodText.text = food.ToString();
     }
 }
