@@ -4,7 +4,7 @@ using System.Collections;
 public class deer : MonoBehaviour {
 
     public gameManager gameManager;
-    public int hp;
+    public float hp;
     public Animator anim;
     public Rigidbody2D rigid;
 
@@ -14,10 +14,13 @@ public class deer : MonoBehaviour {
 
     public GameObject Item;
 
+    float maxHp;
+
     void Start()
     {
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
+        maxHp = hp;
 
         StartCoroutine(moveInRandomDir());
     }
@@ -43,20 +46,32 @@ public class deer : MonoBehaviour {
         
     }
 
-    void OnMouseDown()
+    void OnMouseDrag()
     {
+
 
         if (!killed)
         {
             doEffect();
+            gameManager.updateClick(hp, maxHp);
             anim.Play("treeAnim");
-            if (hp != 0) hp--;
+            if (hp > 0) hp -= Time.deltaTime;
             else Dead();
-            
         }
-           
+
+
+
     }
-    
+
+    void OnMouseDown()
+    {
+        gameManager.clickedImage.SetActive(true);
+    }
+    void OnMouseUp()
+    {
+        gameManager.clickedImage.SetActive(false);
+    }
+
     void Dead()
     {
         killed = true;
@@ -122,7 +137,7 @@ public class deer : MonoBehaviour {
         v2 = Camera.main.ScreenToWorldPoint(v2);
 
         GameObject instance = (GameObject)Instantiate(bloodDirt, v2, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-5f, 5f), 15f));
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), Random.Range(-15f, 25f)));
 
         StartCoroutine(DisableRigidbody(instance));
         StartCoroutine(DestroyInstance(instance));

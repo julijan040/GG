@@ -11,6 +11,8 @@ public class buildManager : MonoBehaviour {
 
     public GameObject grid;
 
+    public GameObject axe;
+
     public void ClickedBuildFence()
     {
         grid.SetActive(true);
@@ -55,25 +57,41 @@ public class buildManager : MonoBehaviour {
 
     public void build()
     {
-        
-        Vector3 v2 = Input.mousePosition;
-        v2.z = 1f;
-
-        v2 = Camera.main.ScreenToWorldPoint(v2);
-
-        
-        float snapInverse = 1 / 0.32f;
-
-        v2.x = Mathf.Round(v2.x * snapInverse) / snapInverse;
-        v2.y = Mathf.Round(v2.y * snapInverse) / snapInverse;
-
-        if(Physics2D.OverlapCircle(v2, 0.01f) == null)
+        if (nameOfSelected == "fances" && GameObject.Find("GameManager").GetComponent<gameManager>().wood >= 3)
         {
-            if (nameOfSelected == "fances") Instantiate(fances[selectedItem], v2, Quaternion.identity);
-        }
+            GameObject.Find("GameManager").GetComponent<gameManager>().wood -= 3;
+            GameObject.Find("GameManager").GetComponent<gameManager>().updateUI();
 
-      
+
+            Vector3 v2 = Input.mousePosition;
+            v2.z = 1f;
+
+            v2 = Camera.main.ScreenToWorldPoint(v2);
+
+
+            float snapInverse = 1 / 0.32f;
+
+            v2.x = Mathf.Round(v2.x * snapInverse) / snapInverse;
+            v2.y = Mathf.Round(v2.y * snapInverse) / snapInverse;
+
+            if (Physics2D.OverlapCircle(v2, 0.01f) == null)
+            {
+                if (nameOfSelected == "fances") Instantiate(fances[selectedItem], v2, Quaternion.identity);
+            }
+        }     
         
+    }
+
+    public void BuildExe()
+    {
+        if (GameObject.Find("GameManager").GetComponent<gameManager>().wood >= 6 && GameObject.Find("GameManager").GetComponent<gameManager>().rock >= 6)
+        {
+            GameObject.Find("GameManager").GetComponent<gameManager>().wood -= 6;
+            GameObject.Find("GameManager").GetComponent<gameManager>().rock -= 6;
+
+            GameObject.Find("GameManager").GetComponent<gameManager>().axe = true;
+            axe.SetActive(true);
+        }
     }
 
 }

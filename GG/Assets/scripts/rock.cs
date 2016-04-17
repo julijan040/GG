@@ -4,7 +4,7 @@ using System.Collections;
 public class rock : MonoBehaviour {
 
     public gameManager gameManager;
-    public int hp;
+    public float hp;
     public Animator anim;
 
     public GameObject rockDirt;
@@ -13,23 +13,39 @@ public class rock : MonoBehaviour {
 
     public GameObject Item;
 
+    float maxHp;
+
     void Start()
     {
         anim = GetComponent<Animator>();
+        maxHp = hp; 
     }
 
 
-    void OnMouseDown()
+    void OnMouseDrag()
     {
-        if(!killed)
+
+
+        if (!killed)
         {
             doEffect();
+            gameManager.updateClick(hp, maxHp);
             anim.Play("treeAnim");
-            if (hp != 0) hp--;
+            if (hp > 0) hp -= Time.deltaTime;
             else Dead();
-
         }
 
+
+
+    }
+
+    void OnMouseDown()
+    {
+        gameManager.clickedImage.SetActive(true);
+    }
+    void OnMouseUp()
+    {
+        gameManager.clickedImage.SetActive(false);
     }
 
     void doEffect()
@@ -40,7 +56,7 @@ public class rock : MonoBehaviour {
         v2 = Camera.main.ScreenToWorldPoint(v2);
 
         GameObject instance = (GameObject)Instantiate(rockDirt, v2, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-5f, 5f), 15f));
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), Random.Range(-15f, 25f)));
 
         StartCoroutine(DisableRigidbody(instance));
         StartCoroutine(DestroyInstance(instance));

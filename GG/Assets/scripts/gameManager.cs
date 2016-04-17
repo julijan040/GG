@@ -24,6 +24,10 @@ public class gameManager : MonoBehaviour {
     public GameObject waterDirt;
     public GameObject bloodDirt;
 
+    public GameObject clickedImage;
+
+    public bool axe;
+
     
 
     void Start ()
@@ -139,5 +143,10 @@ public class gameManager : MonoBehaviour {
         woodText.text = wood.ToString();
         rockText.text = rock.ToString();
         foodText.text = food.ToString();
+    }
+
+    public void updateClick(float hp, float maxHp)
+    {
+        clickedImage.GetComponent<Image>().fillAmount = hp / maxHp;
     }
 }

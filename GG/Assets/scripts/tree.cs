@@ -4,7 +4,7 @@ using System.Collections;
 public class tree : MonoBehaviour {
 
     public gameManager gameManager;
-    public int hp;
+    public float hp;
     public Animator anim;
 
     public GameObject treeDirt;
@@ -13,11 +13,18 @@ public class tree : MonoBehaviour {
 
     public GameObject Item;
 
+    float maxHp;
+
+    public int numOfDrops;
+
+
+
 
 
     void Start()
     {
         anim = GetComponent<Animator>();
+        maxHp = hp;
     }
 
     void Dead()
@@ -32,17 +39,30 @@ public class tree : MonoBehaviour {
     }
 
 
-    void OnMouseDown()
+    void OnMouseDrag()
     {
-        if(!killed)
+        
+       
+        if(!killed && gameManager.axe)
         {
             doEffect();
+            gameManager.updateClick(hp, maxHp);
             anim.Play("treeAnim");
-            if (hp != 0) hp--;
+            if (hp > 0) hp -= Time.deltaTime;
             else Dead();
         }
         
-        
+
+
+    }
+
+    void OnMouseDown()
+    {
+        if(gameManager.axe) gameManager.clickedImage.SetActive(true);
+    }
+    void OnMouseUp()
+    {
+        if (gameManager.axe) gameManager.clickedImage.SetActive(false);
     }
 
     void doEffect()
@@ -53,9 +73,9 @@ public class tree : MonoBehaviour {
         v2 = Camera.main.ScreenToWorldPoint(v2);
 
         GameObject instance = (GameObject)Instantiate(treeDirt, v2, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-5f, 5f), 15f));
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), Random.Range(-15f, 25f)));
 
-        StartCoroutine(DisableRigidbody(instance));
+        StartCoroutine(DisableRigidbody(instance,0.8f));
         StartCoroutine(DestroyInstance(instance));
     }
 
@@ -70,9 +90,9 @@ public class tree : MonoBehaviour {
         Destroy(instance);
     }
 
-    IEnumerator DisableRigidbody(GameObject instance)
+    IEnumerator DisableRigidbody(GameObject instance, float time)
     {
-        yield return new WaitForSeconds(0.65f);
+        yield return new WaitForSeconds(time);
         instance.GetComponent<Rigidbody2D>().isKinematic = true;
     }
 
@@ -92,17 +112,13 @@ public class tree : MonoBehaviour {
 
     void DropItems()
     {
-        GameObject instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
-        StartCoroutine(DisableRigidbody(instance));
-
-        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
-        StartCoroutine(DisableRigidbody(instance));
-
-        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
-        StartCoroutine(DisableRigidbody(instance));
+        for(int i = 0; i<numOfDrops; i++)
+        {
+            GameObject instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+            instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+            StartCoroutine(DisableRigidbody(instance, 0.65f));
+        }
+        
 
 
 
