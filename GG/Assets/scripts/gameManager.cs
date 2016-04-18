@@ -27,8 +27,8 @@ public class gameManager : MonoBehaviour {
     public GameObject clickedImage;
 
     public bool axe;
+    public bool pickaxe;
 
-    
 
     void Start ()
     {

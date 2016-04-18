@@ -12,6 +12,7 @@ public class buildManager : MonoBehaviour {
     public GameObject grid;
 
     public GameObject axe;
+    public GameObject pickaxe;
 
     public void ClickedBuildFence()
     {
@@ -91,6 +92,20 @@ public class buildManager : MonoBehaviour {
 
             GameObject.Find("GameManager").GetComponent<gameManager>().axe = true;
             axe.SetActive(true);
+            GameObject.Find("GameManager").GetComponent<gameManager>().updateUI();
+        }
+    }
+
+    public void BuildPickAxe()
+    {
+        if (GameObject.Find("GameManager").GetComponent<gameManager>().wood >= 6 && GameObject.Find("GameManager").GetComponent<gameManager>().rock >= 6)
+        {
+            GameObject.Find("GameManager").GetComponent<gameManager>().wood -= 6;
+            GameObject.Find("GameManager").GetComponent<gameManager>().rock -= 6;
+
+            GameObject.Find("GameManager").GetComponent<gameManager>().pickaxe = true;
+            pickaxe.SetActive(true);
+            GameObject.Find("GameManager").GetComponent<gameManager>().updateUI();
         }
     }
 

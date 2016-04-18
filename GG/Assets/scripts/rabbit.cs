@@ -4,14 +4,24 @@ using System.Collections;
 public class rabbit : MonoBehaviour {
 
     public gameManager gameManager;
-    public int hp;
+    public float hp;
     public Animator anim;
     public Rigidbody2D rigid;
+
+    float maxHp;
+
+    public bool killed;
+
+    public GameObject Item;
+
+    public GameObject bloodDirt;
 
     void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
+        maxHp = hp;
 
         StartCoroutine(moveInRandomDir());
     }
@@ -45,15 +55,105 @@ public class rabbit : MonoBehaviour {
         anim.Play("rabbitAnim");
     }
 
+    void OnMouseDrag()
+    {
+
+
+        if (!killed)
+        {
+            doEffect();
+            gameManager.updateClick(hp, maxHp);
+            anim.Play("treeAnim");
+            if (hp > 0) hp -= Time.deltaTime;
+            else Dead();
+        }
+
+
+
+    }
+
     void OnMouseDown()
     {
-        gameManager.food++;
-        gameManager.updateUI();
-        if (hp != 0) hp--;
-        else Destroy(this.gameObject);
-        anim.Play("treeAnim");
+        gameManager.clickedImage.SetActive(true);
     }
-    
-    
+    void OnMouseUp()
+    {
+        gameManager.clickedImage.SetActive(false);
+    }
+
+    void Dead()
+    {
+        killed = true;
+
+        StopCoroutine(changeAnimation());
+        StopCoroutine(moveInRandomDir());
+
+        anim.Play("killAnim");
+
+        StartCoroutine(kill());
+
+
+    }
+
+    void doEffect()
+    {
+        Vector3 v2 = Input.mousePosition;
+        v2.z = 1f;
+
+        v2 = Camera.main.ScreenToWorldPoint(v2);
+
+        GameObject instance = (GameObject)Instantiate(bloodDirt, v2, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), Random.Range(-15f, 25f)));
+
+        StartCoroutine(DisableRigidbody(instance));
+        StartCoroutine(DestroyInstance(instance));
+    }
+
+    IEnumerator kill()
+    {
+        GetComponent<BoxCollider2D>().enabled = false;
+
+        DropItems();
+
+
+        yield return new WaitForSeconds(4f);
+
+
+
+        Destroy(this.gameObject);
+    }
+
+    void DropItems()
+    {
+        GameObject instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
+
+        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
+
+        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
+        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
+        StartCoroutine(DisableRigidbody(instance));
+    }
+
+    IEnumerator DestroyInstance(GameObject instance)
+    {
+        yield return new WaitForSeconds(1f);
+
+        instance.GetComponent<Animator>().Play("shrinkAnim");
+
+        yield return new WaitForSeconds(1f);
+
+        Destroy(instance);
+    }
+
+    IEnumerator DisableRigidbody(GameObject instance)
+    {
+        yield return new WaitForSeconds(0.65f);
+        instance.GetComponent<Rigidbody2D>().isKinematic = true;
+    }
+
 
 }

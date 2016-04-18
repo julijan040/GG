@@ -26,7 +26,7 @@ public class rock : MonoBehaviour {
     {
 
 
-        if (!killed)
+        if (!killed && gameManager.pickaxe)
         {
             doEffect();
             gameManager.updateClick(hp, maxHp);
@@ -41,11 +41,11 @@ public class rock : MonoBehaviour {
 
     void OnMouseDown()
     {
-        gameManager.clickedImage.SetActive(true);
+        if(gameManager.pickaxe) gameManager.clickedImage.SetActive(true);
     }
     void OnMouseUp()
     {
-        gameManager.clickedImage.SetActive(false);
+        if (gameManager.pickaxe) gameManager.clickedImage.SetActive(false);
     }
 
     void doEffect()
