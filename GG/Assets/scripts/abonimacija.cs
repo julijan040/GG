@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class deer : MonoBehaviour {
+public class abonimacija : MonoBehaviour {
 
     public gameManager gameManager;
     public float hp;
@@ -15,18 +15,53 @@ public class deer : MonoBehaviour {
     public GameObject Item;
 
     float maxHp;
-
-    public GameObject abonimacija;
-    public GameObject deerObj;
+    
 
     void Start()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<gameManager>();
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         maxHp = hp;
 
         StartCoroutine(moveInRandomDir());
+
+        StartCoroutine(LookForFood());
     }
+
+    IEnumerator LookForFood()
+    {
+        yield return new WaitForSeconds(5f);
+        Collider2D[] col = Physics2D.OverlapCircleAll(this.transform.position, 1f);
+        
+
+        foreach (Collider2D item in col)
+        {
+            if (item.gameObject.tag == "deer" || item.gameObject.tag == "rabbit")
+            {
+                StartCoroutine(WaitAndMove(item.gameObject.transform.position));
+                break;
+            }
+               
+        }
+
+        StartCoroutine(LookForFood());
+
+
+    }
+
+    IEnumerator WaitAndMove(Vector2 cilj)
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime <= 3)
+        {
+            transform.position = Vector2.Lerp(this.transform.position, cilj, (Time.time - startTime)); // lerp from A to B in one second
+            yield return 1; // wait for next frame
+        }
+        
+    }
+
+
 
     IEnumerator moveInRandomDir()
     {
@@ -34,19 +69,17 @@ public class deer : MonoBehaviour {
 
         if (!killed)
         {
-            float x = transform.position.x + Random.Range(-20f, 20f);
-            float y = transform.position.y + Random.Range(-20f, 20f);
-
-            anim.Play("deerMoving");
+            float x = transform.position.x + Random.Range(-30f, 30f);
+            float y = transform.position.y + Random.Range(-30f, 30f);
+            
             rigid.AddForce(new Vector2(x, y), ForceMode2D.Force);
-
-            StartCoroutine(changeAnimation());
+            
             StartCoroutine(moveInRandomDir());
         }
-            
-       
-        
-        
+
+
+
+
     }
 
     void OnMouseDrag()
@@ -57,7 +90,7 @@ public class deer : MonoBehaviour {
         {
             doEffect();
             gameManager.updateClick(hp, maxHp);
-            anim.Play("treeAnim");
+            
             if (hp > 0) hp -= Time.deltaTime;
             else Dead();
         }
@@ -79,44 +112,15 @@ public class deer : MonoBehaviour {
     {
         killed = true;
 
-        StopCoroutine(changeAnimation());
         StopCoroutine(moveInRandomDir());
 
-        anim.Play("killAnim");
-
-        StartCoroutine(kill());
-        
-
-    }
-
-    IEnumerator kill()
-    {
-        GetComponent<BoxCollider2D>().enabled = false;
-
-        DropItems();
-
-
-        yield return new WaitForSeconds(4f);
-
-
-
         Destroy(this.gameObject);
+
+
     }
+    
 
-    void DropItems()
-    {
-        GameObject instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
-        StartCoroutine(DisableRigidbody(instance));
-
-        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
-        StartCoroutine(DisableRigidbody(instance));
-
-        instance = (GameObject)Instantiate(Item, this.transform.position, Quaternion.identity);
-        instance.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-15f, 15f), 20f));
-        StartCoroutine(DisableRigidbody(instance));
-    }
+   
 
     IEnumerator changeAnimation()
     {
@@ -165,33 +169,13 @@ public class deer : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        if(col.gameObject.tag == "rabbit" )
+        if (col.gameObject.tag == "rabbit")
         {
-            Instantiate(abonimacija, this.transform.position, Quaternion.identity);
+            Destroy(col.gameObject);
         }
         if (col.gameObject.tag == "deer")
         {
-            GameObject deerObj1 = (GameObject)Instantiate(deerObj, this.transform.position, Quaternion.identity);
-            deerObj1.SetActive(false);
-            StartCoroutine( enableAfterNCollider(deerObj1));
-            
+            Destroy(col.gameObject);
         }
-    }
-
-    
-
-    IEnumerator enableAfterNCollider(GameObject deerObj1)
-    {
-        yield return new WaitForSeconds(10f);
-        if(Physics2D.OverlapCircle(deerObj1.transform.position, 0.25f))
-        {
-            
-            StartCoroutine(enableAfterNCollider(deerObj1));
-        }
-        else
-        {
-            deerObj1.SetActive(true);
-        }
-        
     }
 }

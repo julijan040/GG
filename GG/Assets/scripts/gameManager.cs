@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class gameManager : MonoBehaviour {
 
@@ -32,7 +33,26 @@ public class gameManager : MonoBehaviour {
 
     void Start ()
     {
+        food = 10;
         Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+
+        StartCoroutine(Starving());
+
+        updateUI();
+    }
+
+    IEnumerator Starving()
+    {
+        yield return new WaitForSeconds(10f);
+        food--;
+        updateUI();
+        if (food < 0) EndGame();
+        StartCoroutine(Starving());
+    }
+
+    void EndGame()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 	
 	void Update ()

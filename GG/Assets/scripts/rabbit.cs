@@ -16,6 +16,8 @@ public class rabbit : MonoBehaviour {
 
     public GameObject bloodDirt;
 
+    public GameObject rabbitObj;
+
     void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -155,5 +157,31 @@ public class rabbit : MonoBehaviour {
         instance.GetComponent<Rigidbody2D>().isKinematic = true;
     }
 
+    IEnumerator enableAfterNCollider(GameObject deerObj1)
+    {
+        yield return new WaitForSeconds(10f);
+        if (Physics2D.OverlapCircle(deerObj1.transform.position, 0.25f))
+        {
+
+            StartCoroutine(enableAfterNCollider(deerObj1));
+        }
+        else
+        {
+            deerObj1.SetActive(true);
+        }
+
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        
+        if (col.gameObject.tag == "rabbit")
+        {
+            GameObject deerObj1 = (GameObject)Instantiate(rabbitObj, this.transform.position, Quaternion.identity);
+            deerObj1.SetActive(false);
+            StartCoroutine(enableAfterNCollider(deerObj1));
+
+        }
+    }
 
 }
