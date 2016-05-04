@@ -29,6 +29,7 @@ public class gameManager : MonoBehaviour {
 
     public bool axe;
     public bool pickaxe;
+    public bool sword;
 
 
     void Start ()

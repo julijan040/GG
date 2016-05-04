@@ -52,15 +52,18 @@ public class deer : MonoBehaviour {
     void OnMouseDrag()
     {
 
-
-        if (!killed)
+        if(gameManager.sword)
         {
-            doEffect();
-            gameManager.updateClick(hp, maxHp);
-            anim.Play("treeAnim");
-            if (hp > 0) hp -= Time.deltaTime;
-            else Dead();
+            if (!killed)
+            {
+                doEffect();
+                gameManager.updateClick(hp, maxHp);
+                anim.Play("treeAnim");
+                if (hp > 0) hp -= Time.deltaTime;
+                else Dead();
+            }
         }
+        
 
 
 
@@ -68,11 +71,11 @@ public class deer : MonoBehaviour {
 
     void OnMouseDown()
     {
-        gameManager.clickedImage.SetActive(true);
+        if (gameManager.sword) gameManager.clickedImage.SetActive(true);
     }
     void OnMouseUp()
     {
-        gameManager.clickedImage.SetActive(false);
+        if (gameManager.sword) gameManager.clickedImage.SetActive(false);
     }
 
     void Dead()
