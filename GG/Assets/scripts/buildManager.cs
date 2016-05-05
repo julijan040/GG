@@ -10,6 +10,7 @@ public class buildManager : MonoBehaviour {
     public GameObject[] fances;
 
     public GameObject grid;
+    public GameObject grid2;
 
     public GameObject axe;
     public GameObject pickaxe;
@@ -18,6 +19,7 @@ public class buildManager : MonoBehaviour {
     public void ClickedBuildFence()
     {
         grid.SetActive(true);
+        grid2.SetActive(true);
         selectedItemSprite.GetComponent<SpriteRenderer>().sprite = fances[0].GetComponent<SpriteRenderer>().sprite;
         selectedItem = 0;
         nameOfSelected = "fances";
@@ -52,6 +54,7 @@ public class buildManager : MonoBehaviour {
             nameOfSelected = "";
             selectedItemSprite.GetComponent<SpriteRenderer>().sprite = null;
             grid.SetActive(false);
+            grid2.SetActive(false);
         }
 
 
